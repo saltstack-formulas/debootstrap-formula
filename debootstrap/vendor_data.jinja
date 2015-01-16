@@ -1,0 +1,217 @@
+{# This file contains static data about the Debian-derived distributions
+   provided by multiple vendors. It ought to be updated frequently. #}
+
+{# We only use grains.filter_by for its merge capability, if that feature
+   was available independently, we should use it directly. #}
+{% set vendor_data = salt['grains.filter_by']({
+    'default': {
+	'debian': {
+	    'repositories': {
+		'default': 'http://http.debian.net/debian',
+		'security': 'http://security.debian.org',
+		'archive': 'http://archive.debian.org/debian',
+		'backports': 'http://backports.debian.org',
+	    },
+	    'components': [ 'main', 'contrib', 'non-free' ],
+	    'dists': {
+		'experimental': {
+		    'parent': 'sid',
+		},
+		'sid': {
+		    'aliases': [ 'unstable' ],
+		},
+		'jessie': {
+		    'aliases': [ 'testing' ],
+		},
+		'jessie-backports': {
+		    'parent': 'jessie',
+		},
+		'jessie-proposed-updates': {
+		    'parent': 'jessie',
+		},
+		'jessie-security': {
+		    'parent': 'jessie',
+		    'repository': 'security',
+		    'apt_codename': 'jessie/updates',
+		},
+		'jessie-updates': {
+		    'parent': 'jessie',
+		},
+		'wheezy': {
+		    'aliases': [ 'stable' ],
+		},
+		'wheezy-backports': {
+		    'parent': 'wheezy',
+		},
+		'wheezy-backports-sloppy': {
+		    'parent': 'wheezy',
+		},
+		'wheezy-proposed-updates': {
+		    'parent': 'wheezy',
+		},
+		'wheezy-security': {
+		    'parent': 'wheezy',
+		    'repository': 'security',
+		    'apt_codename': 'wheezy/updates',
+		},
+		'wheezy-updates': {
+		    'parent': 'wheezy',
+		},
+		'squeeze': {
+		    'aliases': [ 'oldstable' ],
+		},
+		'squeeze-backports': {
+		    'parent': 'squeeze',
+		    'repository': 'backports',
+		},
+		'squeeze-backports-sloppy': {
+		    'parent': 'squeeze',
+		    'repository': 'backports',
+		},
+		'squeeze-lts': {
+		    'parent': 'squeeze',
+		},
+		'squeeze-proposed-updates': {
+		    'parent': 'squeeze',
+		},
+		'squeeze-security': {
+		    'parent': 'squeeze',
+		    'repository': 'security',
+		    'apt_codename': 'squeeze/updates',
+		},
+		'squeeze-updates': {
+		    'parent': 'squeeze',
+		},
+		'lenny': {
+		    'repository': 'archive',
+		    'debootstrap_options': '--no-check-gpg',
+		    'cdebootstrap_options': '--allow-unauthenticated',
+		},
+		'etch': {
+		    'repository': 'archive',
+		    'debootstrap_options': '--no-check-gpg',
+		    'cdebootstrap_options': '--allow-unauthenticated',
+		},
+	    },
+	},
+	'kali': {
+	    'repositories': {
+		'default': 'http://http.kali.org',
+		'security': 'http://security.kali.org',
+	    },
+	    'components': [ 'main', 'contrib', 'non-free' ],
+	    'debootstrap_options': '--include=kali-archive-keyring --no-check-gpg',
+	    'cdebootstrap_options': '--include=kali-archive-keyring --allow-unauthenticated --suite-config=sid',
+	    'dists': {
+		'kali': {},
+		'kali-bleeding-edge': {
+		    'parent': 'kali',
+		},
+		'kali-proposed-updates': {
+		    'parent': 'kali',
+		},
+		'kali-security': {
+		    'parent': 'kali',
+		    'apt_codename': 'kali/updates',
+		    'repository': 'security',
+		},
+		'kali-rolling': {},
+		'kali-rolling-only': {
+		    'parent': 'kali-rolling',
+		},
+		'kali-dev': {},
+		'kali-dev-only': {
+		    'parent': 'kali-dev',
+		},
+	    },
+	},
+	'ubuntu': {
+	    'repositories': {
+		'default': 'http://archive.ubuntu.com/ubuntu',
+		'archive': 'http://old-releases.ubuntu.com/ubuntu',
+	    },
+	    'components': [ 'main', 'restricted', 'universe', 'multiverse' ],
+	    'dists': {
+		'vivid': {},
+		'vivid-backports': {
+		    'parent': 'vivid',
+		},
+		'vivid-proposed': {
+		    'parent': 'vivid',
+		},
+		'vivid-security': {
+		    'parent': 'vivid',
+		},
+		'vivid-updates': {
+		    'parent': 'vivid',
+		},
+		'utopic': {},
+		'utopic-backports': {
+		    'parent': 'utopic',
+		},
+		'utopic-proposed': {
+		    'parent': 'utopic',
+		},
+		'utopic-security': {
+		    'parent': 'utopic',
+		},
+		'utopic-updates': {
+		    'parent': 'utopic',
+		},
+		'trusty': {},
+		'trusty-backports': {
+		    'parent': 'trusty',
+		},
+		'trusty-proposed': {
+		    'parent': 'trusty',
+		},
+		'trusty-security': {
+		    'parent': 'trusty',
+		},
+		'trusty-updates': {
+		    'parent': 'trusty',
+		},
+		'saucy': {},
+		'saucy-backports': {
+		    'parent': 'saucy',
+		},
+		'saucy-proposed': {
+		    'parent': 'saucy',
+		},
+		'saucy-security': {
+		    'parent': 'saucy',
+		},
+		'saucy-updates': {
+		    'parent': 'saucy',
+		},
+		'precise': {},
+		'precise-backports': {
+		    'parent': 'precise',
+		},
+		'precise-proposed': {
+		    'parent': 'precise',
+		},
+		'precise-security': {
+		    'parent': 'precise',
+		},
+		'precise-updates': {
+		    'parent': 'precise',
+		},
+		'lucid': {},
+		'lucid-backports': {
+		    'parent': 'lucid',
+		},
+		'lucid-proposed': {
+		    'parent': 'lucid',
+		},
+		'lucid-security': {
+		    'parent': 'lucid',
+		},
+		'lucid-updates': {
+		    'parent': 'lucid',
+		},
+	    },
+	},
+    },
+}, merge=salt['pillar.get']('debootstrap:vendor', {}),
+default='default') %}

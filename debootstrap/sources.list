@@ -1,0 +1,2 @@
+{%- from 'debootstrap/state.jinja' import sources_list_file -%}
+{{ sources_list_file(data) }}

@@ -1,0 +1,108 @@
+{% from 'debootstrap/vendor_data.jinja' import vendor_data %}
+
+{% set debootstrap_impl = salt['pillar.get']('debootstrap:implementation', 'debootstrap') %}
+
+{# Retrieve debootstrap options for the selected debootstrap implementation #}
+{%- macro debootstrap_options(input) -%}
+{{ input.get(debootstrap_impl + '_options', '') }}
+{%- endmacro -%}
+
+{# Retrieve the archive URL of a given distribution #}
+{%- macro repository_url(vendor, dist) -%}
+{%- set dist_data = vendor_data[vendor]['dists'][dist] -%}
+{{ vendor_data[vendor]['repositories'][dist_data.get('repository', 'default')] }}
+{%- endmacro -%}
+
+{# Generate a sources.list entry based on a chroot description #}
+{%- macro sources_list_entry(vendor, dist, components='', prefix='deb') -%}
+{%- set dist_data = vendor_data[vendor]['dists'][dist] -%}
+{%- if not components -%}
+{%- set components = dist_data.get('components', vendor_data[vendor]['components']) -%}
+{%- endif -%}
+{{ ' '.join([
+    prefix,
+    repository_url(vendor, dist),
+    dist_data.get('apt_codename', dist),
+    ' '.join(components)
+]) }}
+{%- endmacro -%}
+
+{# Generate a sources.list file based on a chroot description #}
+{%- macro sources_list_file(data) -%}
+{%- set components = data.get('components', '') -%}
+{%- set extra_dists = data.get('extra_dists', []) -%}
+{%- set with_source = data.get('with_source', False) -%}
+# This file is managed by Salt. Do not edit. Your changes will be lost.
+# Main repository
+{{ sources_list_entry(data['vendor'], data['dist'], components=components) }}
+{%- if with_source %}
+{{ sources_list_entry(data['vendor'], data['dist'], components=components, prefix='deb-src') }}
+{%- endif -%}
+{%- if extra_dists %}
+# Extra repositories
+{% for extra_dist in extra_dists -%}
+{{ sources_list_entry(data['vendor'], extra_dist, components=components) }}
+{%- if with_source %}
+{{ sources_list_entry(data['vendor'], extra_dist, components=components, prefix='deb-src') }}
+{% endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endmacro -%}
+
+{# Generate the proper debootstrap command line #}
+{% macro debootstrap_cmdline(data) %}
+{%- set vendor = data['vendor'] -%}
+{%- set dist = data['dist'] -%}
+{%- set directory = data['directory'] -%}
+{%- set dist_data = vendor_data[vendor]['dists'][dist] -%}
+{%- set codename = dist_data.get('apt_codename', dist) -%}
+{%- set options = ' '.join([
+	debootstrap_options(vendor_data[vendor]),
+	debootstrap_options(dist_data),
+	'--arch=' + data.get('arch', grains['osarch']),
+	debootstrap_options(data)]) -%}
+{{ ' '.join([
+    debootstrap_impl,
+    options,
+    codename,
+    directory,
+    repository_url(vendor, dist),
+]) }}
+{%- endmacro %}
+
+{% macro debootstrap_state(name, data, apt_update=True, sls_require='debootstrap.pkg') %}
+{% set directory = data['directory'] %}
+{{ name }}:
+  cmd.run:
+    - name: {{ debootstrap_cmdline(data) }} || rm -rf {{ directory }}
+    - unless: test -d {{ directory }}
+    - user: root
+    - group: root
+    - require:
+      - sls: {{ sls_require }}
+
+{{ name }}_sources_list:
+  file.managed:
+    - name: {{ directory }}/etc/apt/sources.list
+    - source: salt://debootstrap/sources.list
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+    - context:
+        data: {{ data }}
+    - require:
+      - cmd: {{ name }}
+
+{% if apt_update %}
+{{ name }}_apt_update:
+  cmd.wait:
+    - name: chroot {{ directory }} sh -c "apt-get update && apt-get -o Dpkg::Options::=--force-confnew -o Dpkg::Options::=--force-confdef -y dist-upgrade"
+    - env:
+      - DEBIAN_FRONTEND: noninteractive
+    - user: root
+    - group: root
+    - watch:
+      - file: {{ name }}_sources_list
+{% endif %}
+{% endmacro %}

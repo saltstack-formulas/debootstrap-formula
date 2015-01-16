@@ -1,0 +1,46 @@
+debootstrap:
+  # This section is usually not needed, except if you deal
+  # with unknow repositories or if you want to override a mirror
+  # to use
+  vendor:
+    debian:          # Name of the vendor
+      repositories:  # Overrides/defines mirror to use
+        default: http://ftp.fr.debian.org/debian
+	security: http://security.debian.org
+      components:    # Default list of components
+        - main
+	- contrib
+	- non-free
+      # Options to pass to debootstrap/cdebootstrap
+      debootstrap_options: '--no-check-gpg'
+      cdebootstrap_options: '--allow-unauthenticated'
+      # Extend/override data about available distributions
+      dists:
+        wheezy:
+         repository: default # this is the default value
+        wheezy-security:
+          parent: wheezy
+          repository: security
+        experimental:
+          components:
+            - main
+    ubuntu:
+      ...
+
+  # List of chroots to setup with debootstrap
+  chroots:
+    unstable:
+      # Required parameters
+      directory: /srv/chroots/unstable
+      vendor: debian
+      dist: sid
+      # Optional parameters
+      arch: amd64  # defaults to current architecture
+      components:  # defaults to list configured in
+                   # debootstrap:vendor:<vendor>:components
+        - main
+	- contrib
+	- non-free
+      extra_dists:       # defaults to the empty list
+        - experimental
+      with_source: True  # defaults to False
