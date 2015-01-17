@@ -19,26 +19,50 @@ Available states
 ``debootstrap``
 ---------------
 
-Create chroots described in pillar data below ``debootstrap:chroots``.
-Here is a short overview of the pillar structure::
+Create chroots described in pillar data within the ``debootstrap:chroots``
+dictionnary. Here's a small pillar data sample::
 
     debootstrap:
+      basedir: /srv/chroots
+      implementation: cdebootstrap
       chroots:
-        unstable:                     # a chroot identifier
-          # Required parameters
-          directory: /srv/chroots/unstable  # the target directory
-          vendor: debian              # the name of the vendor
-          dist: sid                   # codename of the release to bootstrap
-          # Optional parameters
-          arch: amd64                 # architecture to bootstrap
-                                      # (defaults to current arch)
-          components:                 # list of components to enable
-            - main
-          extra_dists:                # supplementary APT repositories to 
-            - experimental            # enable
-          with_source: True           # include source repositories too
-        another-chroot:
-          ...
+        unstable:  # the chroot identifier
+          vendor: debian
+          dist: sid
+
+Here's the full list of parameters that are supported in such chroot
+descriptions:
+
+- ``id``: a chroot identifier, it defaults to the name of the key
+  in the ``debootstrap:chroots`` pillar dictionnary.
+- ``dist``: the codename of the "distribution" (release) to bootstrap.
+  Defaults to the same value as ``id``.
+- ``vendor``: the name of the vendor associated to ``dist``. Only required
+  when the same codename is used by multiple vendors. Best to be explicit
+  when you're not sure.
+- ``basedir``: parent directory of where the chroot will be created.
+  Defaults to ``debootstrap:basedir`` pillar or ``/srv/chroots`` when the
+  former does not exist.
+- ``directory``: the directory where the chroot will be created. Defaults
+  to ``<basedir>/<id>``.
+- ``arch``: the architecture to bootstrap in the chroot. Defaults to the
+  current architecture.
+- ``components`` (alist): the repository components to enable in APT's
+  configuration (aka sources.list). The default value varies for each vendor (and can be
+  overriden via pillar data ``debootstrap:vendor:<vendor>:components``).
+- ``extra_dists`` (a list): supplementary APT repositories to enable
+  in APT's configuration. Defaults to the empty list.
+- ``with_source`` (boolean): if True then add "deb-src" lines for
+  all repositories enabled in APT's sources.list file.
+
+``debootstrap.prereq``
+----------------------
+
+Ensure that the selected debootstrap implementation is installed and that
+the base directory hosting the chroots exists. In general, there's no reason
+to use this state directly (except possibly when you extend this formula).
+The fact that it is separated from ``debootstrap`` is only due to an
+implementation detail.
 
 ``Configuration``
 =================
@@ -56,12 +80,13 @@ You can build your own debootstrap-based formula by importing the
     {% from 'debootstrap/state.jinja' import debootstrap_state %}
 
     {% set data = {
+        'id': 'my_chroot_identifier',
         'directory': '/srv/chroots/jessie',
         'vendor': 'debian',
         'dist': 'jessie',
     } %}
-    {{ debootstrap_state('my_state_name', data, apt_update=False) }}
+    {{ debootstrap_state(data, apt_update=False) }}
 
 You can rely on the fact that this will also create a file.managed
-state suffixed with "_sources_list" to update the sources.list file in the
-chroot.
+state named ``debootstrap_<id>_sources_list`` to update the sources.list
+file in the chroot.

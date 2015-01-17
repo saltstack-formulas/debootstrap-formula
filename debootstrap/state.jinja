@@ -1,6 +1,17 @@
 {% from 'debootstrap/vendor_data.jinja' import vendor_data %}
 
-{% set debootstrap_impl = salt['pillar.get']('debootstrap:implementation', 'debootstrap') %}
+{% set debootstrap_impl = salt['pillar.get']('debootstrap:implementation', 'cdebootstrap') %}
+
+{# Try to identify the vendor of a given distribution #}
+{%- macro find_vendor_for_dist(dist_to_search) -%}
+{%- for vendor in vendor_data -%}
+{%- for dist in vendor_data[vendor]['dists'] -%}
+{%- if dist == dist_to_search -%}
+{{ vendor }}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+{%- endmacro -%}
 
 {# Retrieve debootstrap options for the selected debootstrap implementation #}
 {%- macro debootstrap_options(input) -%}
@@ -34,30 +45,40 @@
 {%- set with_source = data.get('with_source', False) -%}
 # This file is managed by Salt. Do not edit. Your changes will be lost.
 # Main repository
-{{ sources_list_entry(data['vendor'], data['dist'], components=components) }}
+{{ sources_list_entry(data.vendor, data.dist, components=components) }}
 {%- if with_source %}
-{{ sources_list_entry(data['vendor'], data['dist'], components=components, prefix='deb-src') }}
+{{ sources_list_entry(data.vendor, data.dist, components=components, prefix='deb-src') }}
 {%- endif -%}
 {%- if extra_dists %}
 # Extra repositories
 {% for extra_dist in extra_dists -%}
-{{ sources_list_entry(data['vendor'], extra_dist, components=components) }}
+{{ sources_list_entry(data.vendor, extra_dist, components=components) }}
 {%- if with_source %}
-{{ sources_list_entry(data['vendor'], extra_dist, components=components, prefix='deb-src') }}
+{{ sources_list_entry(data.vendor, extra_dist, components=components, prefix='deb-src') }}
 {% endif -%}
 {%- endfor -%}
 {%- endif -%}
 {%- endmacro -%}
 
+{# Fill data hash with default values for missing parameters #}
+{% macro debootstrap_prepare_data(data, id=None) %}
+{% if id is defined %}
+{% do data.setdefault('id', id) %}
+{% endif %}
+{% do data.setdefault('dist', data.id) %}
+{% set default_vendor = find_vendor_for_dist(data.dist).encode('utf-8') %}
+{% do data.setdefault('vendor', default_vendor) %}
+{% if 'basedir' in data %}
+{% do data.setdefault('directory', '{}/{}'.format(data.basedir, data.id)) %}
+{% endif %}
+{% endmacro %}
+
 {# Generate the proper debootstrap command line #}
 {% macro debootstrap_cmdline(data) %}
-{%- set vendor = data['vendor'] -%}
-{%- set dist = data['dist'] -%}
-{%- set directory = data['directory'] -%}
-{%- set dist_data = vendor_data[vendor]['dists'][dist] -%}
-{%- set codename = dist_data.get('apt_codename', dist) -%}
+{%- set dist_data = vendor_data[data.vendor]['dists'][data.dist] -%}
+{%- set codename = dist_data.get('apt_codename', data.dist) -%}
 {%- set options = ' '.join([
-	debootstrap_options(vendor_data[vendor]),
+	debootstrap_options(vendor_data[data.vendor]),
 	debootstrap_options(dist_data),
 	'--arch=' + data.get('arch', grains['osarch']),
 	debootstrap_options(data)]) -%}
@@ -65,25 +86,25 @@
     debootstrap_impl,
     options,
     codename,
-    directory,
-    repository_url(vendor, dist),
+    data.directory,
+    repository_url(data.vendor, data.dist),
 ]) }}
 {%- endmacro %}
 
-{% macro debootstrap_state(name, data, apt_update=True, sls_require='debootstrap.pkg') %}
-{% set directory = data['directory'] %}
-{{ name }}:
+{% macro debootstrap_state(data, apt_update=True, sls_require='debootstrap.prereq') %}
+{% do debootstrap_prepare_data(data) %}
+debootstrap_{{ data.id }}:
   cmd.run:
-    - name: {{ debootstrap_cmdline(data) }} || rm -rf {{ directory }}
-    - unless: test -d {{ directory }}
+    - name: {{ debootstrap_cmdline(data) }} || (rm -rf {{ data.directory }}; exit 1)
+    - unless: test -d {{ data.directory }}
     - user: root
     - group: root
     - require:
       - sls: {{ sls_require }}
 
-{{ name }}_sources_list:
+debootstrap_{{ data.id }}_sources_list:
   file.managed:
-    - name: {{ directory }}/etc/apt/sources.list
+    - name: {{ data.directory }}/etc/apt/sources.list
     - source: salt://debootstrap/sources.list
     - user: root
     - group: root
@@ -92,17 +113,17 @@
     - context:
         data: {{ data }}
     - require:
-      - cmd: {{ name }}
+      - cmd: debootstrap_{{ data.id }}
 
 {% if apt_update %}
-{{ name }}_apt_update:
+debootstrap_{{ data.id }}_apt_update:
   cmd.wait:
-    - name: chroot {{ directory }} sh -c "apt-get update && apt-get -o Dpkg::Options::=--force-confnew -o Dpkg::Options::=--force-confdef -y dist-upgrade"
+    - name: chroot {{ data.directory }} sh -c "apt-get update && apt-get -o Dpkg::Options::=--force-confnew -o Dpkg::Options::=--force-confdef -y dist-upgrade"
     - env:
       - DEBIAN_FRONTEND: noninteractive
     - user: root
     - group: root
     - watch:
-      - file: {{ name }}_sources_list
+      - file: debootstrap_{{ data.id }}_sources_list
 {% endif %}
 {% endmacro %}

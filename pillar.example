@@ -1,7 +1,8 @@
 debootstrap:
   # This section is usually not needed, except if you deal
   # with unknow repositories or if you want to override a mirror
-  # to use
+  # to use (see debootstrap/vendor_data.jinja for the default
+  # values)
   vendor:
     debian:          # Name of the vendor
       repositories:  # Overrides/defines mirror to use
@@ -27,20 +28,26 @@ debootstrap:
     ubuntu:
       ...
 
-  # List of chroots to setup with debootstrap
+  # Choose the tool to use to create the chroots (among "debootstrap" and
+  # "cdebootstrap", the latter is the default)
+  implementation: cdebootstrap
+
+  # The base directory hosting the chroots when no explicit directory is
+  # provided
+  basedir: /srv/chroots
+
+  # List of chroots to setup with debootstrap (see README.rst for a detailed
+  # explanation)
   chroots:
     unstable:
-      # Required parameters
       directory: /srv/chroots/unstable
       vendor: debian
       dist: sid
-      # Optional parameters
-      arch: amd64  # defaults to current architecture
-      components:  # defaults to list configured in
-                   # debootstrap:vendor:<vendor>:components
+      arch: amd64
+      components:
         - main
 	- contrib
 	- non-free
-      extra_dists:       # defaults to the empty list
+      extra_dists:
         - experimental
-      with_source: True  # defaults to False
+      with_source: True
