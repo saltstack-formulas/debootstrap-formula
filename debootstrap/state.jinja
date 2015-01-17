@@ -51,11 +51,11 @@
 {%- endif -%}
 {%- if extra_dists %}
 # Extra repositories
-{% for extra_dist in extra_dists -%}
+{%- for extra_dist in extra_dists %}
 {{ sources_list_entry(data.vendor, extra_dist, components=components) }}
 {%- if with_source %}
 {{ sources_list_entry(data.vendor, extra_dist, components=components, prefix='deb-src') }}
-{% endif -%}
+{%- endif %}
 {%- endfor -%}
 {%- endif -%}
 {%- endmacro -%}
