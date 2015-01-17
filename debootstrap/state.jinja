@@ -66,7 +66,7 @@
 {% do data.setdefault('id', id) %}
 {% endif %}
 {% do data.setdefault('dist', data.id) %}
-{% set default_vendor = find_vendor_for_dist(data.dist).encode('utf-8') %}
+{% set default_vendor = '{}'.format(find_vendor_for_dist(data.dist)) %}
 {% do data.setdefault('vendor', default_vendor) %}
 {% if 'basedir' in data %}
 {% do data.setdefault('directory', '{}/{}'.format(data.basedir, data.id)) %}
