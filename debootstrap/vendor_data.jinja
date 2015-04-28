@@ -20,8 +20,25 @@
 		'sid': {
 		    'aliases': [ 'unstable' ],
 		},
-		'jessie': {
+		'stretch': {
 		    'aliases': [ 'testing' ],
+		},
+		'stretch-backports': {
+		    'parent': 'stretch',
+		},
+		'stretch-proposed-updates': {
+		    'parent': 'stretch',
+		},
+		'stretch-security': {
+		    'parent': 'stretch',
+		    'repository': 'security',
+		    'apt_codename': 'stretch/updates',
+		},
+		'stretch-updates': {
+		    'parent': 'stretch',
+		},
+		'jessie': {
+		    'aliases': [ 'stable' ],
 		},
 		'jessie-backports': {
 		    'parent': 'jessie',
@@ -38,7 +55,7 @@
 		    'parent': 'jessie',
 		},
 		'wheezy': {
-		    'aliases': [ 'stable' ],
+		    'aliases': [ 'oldstable' ],
 		},
 		'wheezy-backports': {
 		    'parent': 'wheezy',
@@ -58,7 +75,7 @@
 		    'parent': 'wheezy',
 		},
 		'squeeze': {
-		    'aliases': [ 'oldstable' ],
+		    'aliases': [ 'oldoldstable' ],
 		},
 		'squeeze-backports': {
 		    'parent': 'squeeze',
