@@ -20,13 +20,13 @@
 
 {# Retrieve the archive URL of a given distribution #}
 {%- macro repository_url(vendor, dist) -%}
-{%- set dist_data = vendor_data[vendor]['dists'][dist] -%}
+{%- set dist_data = vendor_data[vendor]['dists'].get(dist, {}) -%}
 {{ vendor_data[vendor]['repositories'][dist_data.get('repository', 'default')] }}
 {%- endmacro -%}
 
 {# Generate a sources.list entry based on a chroot description #}
 {%- macro sources_list_entry(vendor, dist, components='', prefix='deb') -%}
-{%- set dist_data = vendor_data[vendor]['dists'][dist] -%}
+{%- set dist_data = vendor_data[vendor]['dists'].get(dist, {}) -%}
 {%- if not components -%}
 {%- set components = dist_data.get('components', vendor_data[vendor]['components']) -%}
 {%- endif -%}
@@ -75,7 +75,7 @@
 
 {# Generate the proper debootstrap command line #}
 {% macro debootstrap_cmdline(data) %}
-{%- set dist_data = vendor_data[data.vendor]['dists'][data.dist] -%}
+{%- set dist_data = vendor_data[data.vendor]['dists'].get(data.dist, {}) -%}
 {%- set codename = dist_data.get('apt_codename', data.dist) -%}
 {%- set options = ' '.join([
 	debootstrap_options(vendor_data[data.vendor]),
