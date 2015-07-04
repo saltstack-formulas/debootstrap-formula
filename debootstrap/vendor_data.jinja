@@ -136,6 +136,11 @@
 		'kali-rolling-only': {
 		    'parent': 'kali-rolling',
 		},
+		'kali-rolling-security': {
+		    'parent': 'kali-rolling',
+		    'apt_codename': 'kali-rolling/updates',
+		    'repository': 'security',
+		},
 		'kali-dev': {},
 		'kali-dev-only': {
 		    'parent': 'kali-dev',
@@ -146,11 +151,23 @@
 		'moto-proposed-updates': {
 		    'parent': 'moto',
 		},
+		'moto-security': {
+		    'aliases': [ 'kali-current-security' ],
+		    'parent': 'moto',
+		    'apt_codename': 'moto/updates',
+		    'repository': 'security',
+		},
 		'sana': {
 		    'aliases': [ 'kali-next' ],
 		},
 		'sana-proposed-updates': {
 		    'parent': 'sana',
+		},
+		'sana-security': {
+		    'aliases': [ 'kali-next-security' ],
+		    'parent': 'sana',
+		    'apt_codename': 'sana/updates',
+		    'repository': 'security',
 		},
 	    },
 	},
