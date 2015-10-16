@@ -115,22 +115,24 @@
 	    'repositories': {
 		'default': 'http://http.kali.org',
 		'security': 'http://security.kali.org',
+		'old': 'http://old.kali.org/kali',
+		'old-security': 'http://old.kali.org/kali-security',
 	    },
 	    'components': [ 'main', 'contrib', 'non-free' ],
 	    'debootstrap_options': '--include=kali-archive-keyring --no-check-gpg',
 	    'cdebootstrap_options': '--include=kali-archive-keyring --allow-unauthenticated --suite-config=sid',
 	    'dists': {
-		'kali': {},
-		'kali-bleeding-edge': {
-		    'parent': 'kali',
+		'kali-current': {},
+		'kali-current-proposed-updates': {
+		    'parent': 'kali-current',
 		},
-		'kali-proposed-updates': {
-		    'parent': 'kali',
-		},
-		'kali-security': {
-		    'parent': 'kali',
-		    'apt_codename': 'kali/updates',
+		'kali-current-security': {
+		    'parent': 'kali-current',
+		    'apt_codename': 'kali-current/updates',
 		    'repository': 'security',
+		},
+		'kali-bleeding-edge': {
+		    'parent': 'kali-current',
 		},
 		'kali-rolling': {},
 		'kali-rolling-only': {
@@ -146,25 +148,22 @@
 		    'parent': 'kali-dev',
 		},
 		'moto': {
-		    'aliases': [ 'kali-current' ],
-		},
-		'moto-proposed-updates': {
-		    'parent': 'moto',
+		    'repository': 'old',
 		},
 		'moto-security': {
-		    'aliases': [ 'kali-current-security' ],
 		    'parent': 'moto',
 		    'apt_codename': 'moto/updates',
-		    'repository': 'security',
+		    'repository': 'old-security',
 		},
 		'sana': {
-		    'aliases': [ 'kali-next' ],
+		    'aliases': [ 'kali-current' ],
 		},
 		'sana-proposed-updates': {
+		    'aliases': [ 'kali-current-proposed-updates' ],
 		    'parent': 'sana',
 		},
 		'sana-security': {
-		    'aliases': [ 'kali-next-security' ],
+		    'aliases': [ 'kali-current-security' ],
 		    'parent': 'sana',
 		    'apt_codename': 'sana/updates',
 		    'repository': 'security',
