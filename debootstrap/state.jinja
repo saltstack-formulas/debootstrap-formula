@@ -1,6 +1,7 @@
 {% from 'debootstrap/vendor_data.jinja' import vendor_data %}
 
 {% set debootstrap_impl = salt['pillar.get']('debootstrap:implementation', 'cdebootstrap') %}
+{% set basedir = salt['pillar.get']('debootstrap:basedir', '/srv/chroots') %}
 
 {# Try to identify the vendor of a given distribution #}
 {%- macro find_vendor_for_dist(dist_to_search) -%}
@@ -68,9 +69,7 @@
 {% do data.setdefault('dist', data.id) %}
 {% set default_vendor = '{}'.format(find_vendor_for_dist(data.dist)) %}
 {% do data.setdefault('vendor', default_vendor) %}
-{% if 'basedir' in data %}
-{% do data.setdefault('directory', '{}/{}'.format(data.basedir, data.id)) %}
-{% endif %}
+{% do data.setdefault('directory', '{}/{}'.format(data.get('basedir', basedir), data.id)) %}
 {% endmacro %}
 
 {# Generate the proper debootstrap command line #}
