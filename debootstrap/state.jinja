@@ -96,8 +96,7 @@ debootstrap_{{ data.id }}:
   cmd.run:
     - name: {{ debootstrap_cmdline(data) }} || (rm -rf {{ data.directory }}; exit 1)
     - unless: test -d {{ data.directory }}
-    - user: root
-    - group: root
+    - runas: root
     - require:
       - sls: {{ sls_require }}
 

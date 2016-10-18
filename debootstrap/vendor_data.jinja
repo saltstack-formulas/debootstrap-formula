@@ -120,7 +120,7 @@
 	    },
 	    'components': [ 'main', 'contrib', 'non-free' ],
 	    'debootstrap_options': '--include=kali-archive-keyring --no-check-gpg',
-	    'cdebootstrap_options': '--include=kali-archive-keyring --allow-unauthenticated --suite-config=sid',
+	    'cdebootstrap_options': '--include=kali-archive-keyring --allow-unauthenticated --suite-config=generic',
 	    'dists': {
 		'kali-current': {},
 		'kali-current-proposed-updates': {
@@ -189,6 +189,7 @@
 		'archive': 'http://old-releases.ubuntu.com/ubuntu',
 	    },
 	    'components': [ 'main', 'restricted', 'universe', 'multiverse' ],
+	    'cdebootstrap_options': '--allow-unauthenticated',
 	    'dists': {
 		'xenial': {},
 		'xenial-backports': {
