@@ -1,10 +1,12 @@
 debootstrap formula
 ===================
 
-0.1.3 (2017-06-08)
+0.2.0 (2017-06-08)
 
 - Make compatible with cdebootstrap 0.7.x from Debian 9 Stretch.
 - Support passing script parameter with debootstrap.
+- Use debootstrap by default instead of cdebootstrap (which is not as well
+  maintained).
 
 0.1.2 (2015-01-17)
 

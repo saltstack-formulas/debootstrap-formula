@@ -1,6 +1,6 @@
 {% from 'debootstrap/vendor_data.jinja' import vendor_data %}
 
-{% set debootstrap_impl = salt['pillar.get']('debootstrap:implementation', 'cdebootstrap') %}
+{% set debootstrap_impl = salt['pillar.get']('debootstrap:implementation', 'debootstrap') %}
 {% set basedir = salt['pillar.get']('debootstrap:basedir', '/srv/chroots') %}
 
 {# Try to identify the vendor of a given distribution #}
