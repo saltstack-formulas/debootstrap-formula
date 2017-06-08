@@ -9,8 +9,9 @@
 	    'repositories': {
 		'default': 'http://http.debian.net/debian',
 		'security': 'http://security.debian.org',
-		'archive': 'http://archive.debian.org/debian',
 		'backports': 'http://backports.debian.org',
+		'archive': 'http://archive.debian.org/debian',
+		'archive-security': 'http://archive.debian.org/debian-security',
 	    },
 	    'components': [ 'main', 'contrib', 'non-free' ],
 	    'dists': {
@@ -75,29 +76,20 @@
 		    'parent': 'wheezy',
 		},
 		'squeeze': {
-		    'aliases': [ 'oldoldstable' ],
-		},
-		'squeeze-backports': {
-		    'parent': 'squeeze',
-		    'repository': 'backports',
-		},
-		'squeeze-backports-sloppy': {
-		    'parent': 'squeeze',
-		    'repository': 'backports',
+		    'repository': 'archive',
 		},
 		'squeeze-lts': {
+		    'repository': 'archive',
 		    'parent': 'squeeze',
 		},
 		'squeeze-proposed-updates': {
+		    'repository': 'archive',
 		    'parent': 'squeeze',
 		},
 		'squeeze-security': {
+		    'repository': 'archive-security',
 		    'parent': 'squeeze',
-		    'repository': 'security',
 		    'apt_codename': 'squeeze/updates',
-		},
-		'squeeze-updates': {
-		    'parent': 'squeeze',
 		},
 		'lenny': {
 		    'repository': 'archive',
