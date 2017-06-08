@@ -117,6 +117,7 @@
 	    },
 	    'components': [ 'main', 'contrib', 'non-free' ],
 	    'debootstrap_options': '--include=kali-archive-keyring --no-check-gpg',
+	    'debootstrap_script': '/usr/share/debootstrap/scripts/sid',
 	    'cdebootstrap_options': '--include=kali-archive-keyring --allow-unauthenticated ' + suite_config,
 	    'dists': {
 		'kali-current': {},

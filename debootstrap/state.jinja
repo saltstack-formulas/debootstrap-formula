@@ -19,6 +19,15 @@
 {{ input.get(debootstrap_impl + '_options', '') }}
 {%- endmacro -%}
 
+{# Retrieve debootstrap script parameter (specific to debootstrap) #}
+{%- macro debootstrap_script(input, input2, input3) -%}
+{%- if debootstrap_impl == 'debootstrap' -%}
+{{ input3.get('debootstrap_script',
+     input2.get('debootstrap_script',
+       input.get('debootstrap_script', ''))) }}
+{%- endif -%}
+{%- endmacro -%}
+
 {# Retrieve the archive URL of a given distribution #}
 {%- macro repository_url(vendor, dist) -%}
 {%- set dist_data = vendor_data[vendor]['dists'].get(dist, {}) -%}
@@ -87,6 +96,7 @@
     codename,
     data.directory,
     repository_url(data.vendor, data.dist),
+    debootstrap_script(vendor_data[data.vendor], dist_data, data)
 ]) }}
 {%- endmacro %}
 
