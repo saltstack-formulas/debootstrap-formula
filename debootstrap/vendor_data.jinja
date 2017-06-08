@@ -1,6 +1,11 @@
 {# This file contains static data about the Debian-derived distributions
    provided by multiple vendors. It ought to be updated frequently. #}
 
+{% set suite_config = '--suite-config=generic' %}
+{% if grains['oscodename'] in ['wheezy', 'jessie'] %}
+{% set suite_config = '--suite-config=sid' %}
+{% endif %}
+
 {# We only use grains.filter_by for its merge capability, if that feature
    was available independently, we should use it directly. #}
 {% set vendor_data = salt['grains.filter_by']({
@@ -112,7 +117,7 @@
 	    },
 	    'components': [ 'main', 'contrib', 'non-free' ],
 	    'debootstrap_options': '--include=kali-archive-keyring --no-check-gpg',
-	    'cdebootstrap_options': '--include=kali-archive-keyring --allow-unauthenticated --suite-config=generic',
+	    'cdebootstrap_options': '--include=kali-archive-keyring --allow-unauthenticated ' + suite_config,
 	    'dists': {
 		'kali-current': {},
 		'kali-current-proposed-updates': {

@@ -1,6 +1,10 @@
 debootstrap formula
 ===================
 
+0.1.3 (2017-06-08)
+
+- Make compatible with cdebootstrap 0.7.x from Debian 9 Stretch.
+
 0.1.2 (2015-01-17)
 
 - Make most parameters optional ("dist" defaults to the chroot identifier,
