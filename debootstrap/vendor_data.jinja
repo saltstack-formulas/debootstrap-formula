@@ -26,8 +26,42 @@
 		'sid': {
 		    'aliases': [ 'unstable' ],
 		},
-		'stretch': {
+		'bullseye': {
 		    'aliases': [ 'testing' ],
+		},
+		'bullseye-backports': {
+		    'parent': 'bullseye',
+		},
+		'bullseye-proposed-updates': {
+		    'parent': 'bullseye',
+		},
+		'bullseye-security': {
+		    'parent': 'bullseye',
+		    'repository': 'security',
+		    'apt_codename': 'bullseye/updates',
+		},
+		'bullseye-updates': {
+		   'parent': 'bullseye',
+		},
+		'buster': {
+		    'aliases': [ 'stable' ],
+		},
+		'buster-backports': {
+		    'parent': 'buster',
+		},
+		'buster-proposed-updates': {
+		    'parent': 'buster',
+		},
+		'buster-security': {
+		    'parent': 'buster',
+		    'repository': 'security',
+		    'apt_codename': 'buster/updates',
+		},
+		'buster-updates': {
+		    'parent': 'buster',
+		},
+		'stretch': {
+		    'aliases': [ 'oldstable' ],
 		},
 		'stretch-backports': {
 		    'parent': 'stretch',
@@ -44,7 +78,7 @@
 		    'parent': 'stretch',
 		},
 		'jessie': {
-		    'aliases': [ 'stable' ],
+		    'aliases': [ 'oldoldstable' ],
 		},
 		'jessie-backports': {
 		    'parent': 'jessie',
@@ -61,7 +95,7 @@
 		    'parent': 'jessie',
 		},
 		'wheezy': {
-		    'aliases': [ 'oldstable' ],
+		    'repository': 'archive',
 		},
 		'wheezy-backports': {
 		    'parent': 'wheezy',
