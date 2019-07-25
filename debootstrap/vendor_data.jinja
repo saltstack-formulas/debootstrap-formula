@@ -12,7 +12,7 @@
     'default': {
 	'debian': {
 	    'repositories': {
-		'default': 'http://http.debian.net/debian',
+		'default': 'http://deb.debian.org/debian',
 		'security': 'http://security.debian.org',
 		'backports': 'http://backports.debian.org',
 		'archive': 'http://archive.debian.org/debian',
@@ -26,8 +26,42 @@
 		'sid': {
 		    'aliases': [ 'unstable' ],
 		},
-		'stretch': {
+		'bullseye': {
 		    'aliases': [ 'testing' ],
+		},
+		'bullseye-backports': {
+		    'parent': 'bullseye',
+		},
+		'bullseye-proposed-updates': {
+		    'parent': 'bullseye',
+		},
+		'bullseye-security': {
+		    'parent': 'bullseye',
+		    'repository': 'security',
+		    'apt_codename': 'bullseye-security',
+		},
+		'bullseye-updates': {
+		   'parent': 'bullseye',
+		},
+		'buster': {
+		    'aliases': [ 'stable' ],
+		},
+		'buster-backports': {
+		    'parent': 'buster',
+		},
+		'buster-proposed-updates': {
+		    'parent': 'buster',
+		},
+		'buster-security': {
+		    'parent': 'buster',
+		    'repository': 'security',
+		    'apt_codename': 'buster/updates',
+		},
+		'buster-updates': {
+		    'parent': 'buster',
+		},
+		'stretch': {
+		    'aliases': [ 'oldstable' ],
 		},
 		'stretch-backports': {
 		    'parent': 'stretch',
@@ -44,7 +78,7 @@
 		    'parent': 'stretch',
 		},
 		'jessie': {
-		    'aliases': [ 'stable' ],
+		    'aliases': [ 'oldoldstable' ],
 		},
 		'jessie-backports': {
 		    'parent': 'jessie',
@@ -61,24 +95,20 @@
 		    'parent': 'jessie',
 		},
 		'wheezy': {
-		    'aliases': [ 'oldstable' ],
+		    'repository': 'archive',
 		},
 		'wheezy-backports': {
+		    'repository': 'archive',
 		    'parent': 'wheezy',
 		},
 		'wheezy-backports-sloppy': {
-		    'parent': 'wheezy',
-		},
-		'wheezy-proposed-updates': {
+		    'repository': 'archive',
 		    'parent': 'wheezy',
 		},
 		'wheezy-security': {
+		    'repository': 'archive-security',
 		    'parent': 'wheezy',
-		    'repository': 'security',
 		    'apt_codename': 'wheezy/updates',
-		},
-		'wheezy-updates': {
-		    'parent': 'wheezy',
 		},
 		'squeeze': {
 		    'repository': 'archive',
