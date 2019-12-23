@@ -119,7 +119,7 @@ debootstrap_{{ data.id }}_sources_list:
     - mode: 644
     - template: jinja
     - context:
-        data: {{ data }}
+        data: {{ data|tojson }}
     - require:
       - cmd: debootstrap_{{ data.id }}
 
