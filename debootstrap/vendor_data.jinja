@@ -17,6 +17,7 @@
 		'backports': 'http://backports.debian.org',
 		'archive': 'http://archive.debian.org/debian',
 		'archive-security': 'http://archive.debian.org/debian-security',
+		'extended-lts': 'http://deb.freexian.com/extended-lts',
 	    },
 	    'components': [ 'main', 'contrib', 'non-free' ],
 	    'dists': {
@@ -94,6 +95,10 @@
 		'jessie-updates': {
 		    'parent': 'jessie',
 		},
+		'jessie-lts': {
+		    'repository': 'extended-lts',
+		    'parent': 'jessie',
+		},
 		'wheezy': {
 		    'repository': 'archive',
 		},
@@ -109,6 +114,10 @@
 		    'repository': 'archive-security',
 		    'parent': 'wheezy',
 		    'apt_codename': 'wheezy/updates',
+		},
+		'wheezy-lts': {
+		    'repository': 'extended-lts',
+		    'parent': 'wheezy',
 		},
 		'squeeze': {
 		    'repository': 'archive',
